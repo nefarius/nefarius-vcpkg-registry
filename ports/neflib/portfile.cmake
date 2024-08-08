@@ -25,7 +25,7 @@ vcpkg_copy_pdbs()
 
 file(COPY
     "${SOURCE_PATH}/include/nefarius/neflib"
-    DESTINATION "${CURRENT_PACKAGES_DIR}/include/nefarius/neflib"
+    DESTINATION "${CURRENT_PACKAGES_DIR}/include/nefarius"
     FILES_MATCHING PATTERN *.h PATTERN *.hpp)
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
