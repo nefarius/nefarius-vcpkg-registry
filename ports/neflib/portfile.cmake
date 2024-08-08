@@ -10,8 +10,6 @@ vcpkg_from_github(
     SHA512 f06a768ff470e51ee1f7d07a612225d2f2da4183ddab86f44caa40b708a2531732a372aa28ea2202310cf74824d743030fbe8c2834c1176216dec69cebc3e08c
 )
 
-vcpkg_cmake_install()
-
 vcpkg_msbuild_install(
     SOURCE_PATH "${SOURCE_PATH}"
     PROJECT_SUBPATH src/neflib.vcxproj
