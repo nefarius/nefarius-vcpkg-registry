@@ -16,3 +16,9 @@ git add versions
 git commit --amend --no-edit
 git push
 ```
+
+## Test it locally
+
+```batch
+vcpkg install neflib:x64-windows-static --overlay-ports=ports/neflib
+```
