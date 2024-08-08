@@ -4,7 +4,9 @@
     "description": "A collection of my C/C++ utilities :)",
     "homepage": "https://github.com/nefarius/neflib",
     "license": "MIT",
-    "dependencies": [],
+    "dependencies": [
+        "wil"
+    ],
     "features": {},
     "supports": "windows & static & !uwp",
     "default-features": []
