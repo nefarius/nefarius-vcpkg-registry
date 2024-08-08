@@ -1,6 +1,8 @@
 set(VCPKG_CRT_LINKAGE static)
 set(VCPKG_LIBRARY_LINKAGE static)
 
+vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO nefarius/neflib
@@ -8,7 +10,7 @@ vcpkg_from_github(
     SHA512 0519c404f48848090d53ae869aacf709acd44627089b87aeb0cde2e85df5e1e9d7f49b4ddae1a9cdc39a395764723046c47312d4022f8b707115e401981433e6
 )
 
-vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
+vcpkg_cmake_install()
 
 vcpkg_install_msbuild(
     SOURCE_PATH "${SOURCE_PATH}"
