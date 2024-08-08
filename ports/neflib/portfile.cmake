@@ -1,12 +1,5 @@
-if(NOT VCPKG_TARGET_IS_WINDOWS)
-    vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
-endif()
-
-if(VCPKG_CRT_LINKAGE STREQUAL "static")
-    set(CRT_LINKAGE "MT")
-elseif(VCPKG_CRT_LINKAGE STREQUAL "dynamic")
-    set(CRT_LINKAGE "MD")
-endif()
+set(VCPKG_CRT_LINKAGE static)
+set(VCPKG_LIBRARY_LINKAGE static)
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
