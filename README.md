@@ -15,10 +15,42 @@ rem update .\versions\n-\neflib.json with returned checksum in "git-tree"
 git add versions
 git commit --amend --no-edit
 git push
+git rev-parse HEAD
 ```
 
 ## Test it locally
 
 ```batch
 vcpkg install neflib:x64-windows-static --overlay-ports=ports/neflib
+```
+
+## How to consume
+
+### `vcpkg-configuration.json`
+
+```json
+{
+  "registries": [
+    {
+      "kind": "git",
+      "repository": "https://github.com/nefarius/nefarius-vcpkg-registry.git",
+      "baseline": "710c5dff329f590618dc22c39823356238465499",
+      "packages": [ "neflib" ]
+    }
+  ],
+  "default-registry": {
+    "kind": "builtin",
+    "baseline": "2024.07.12"
+  }
+}
+```
+
+### `vcpkg.json`
+
+```json
+{
+  "dependencies": [
+    "neflib"
+  ]
+}
 ```
