@@ -54,3 +54,7 @@ vcpkg install neflib:x64-windows-static --overlay-ports=ports/neflib
   ]
 }
 ```
+
+## Resources
+
+- [Registries: Bring your own libraries to vcpkg](https://devblogs.microsoft.com/cppblog/registries-bring-your-own-libraries-to-vcpkg/)
