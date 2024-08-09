@@ -34,7 +34,7 @@ vcpkg install neflib:x64-windows-static --overlay-ports=ports/neflib
     {
       "kind": "git",
       "repository": "https://github.com/nefarius/nefarius-vcpkg-registry.git",
-      "baseline": "latest",
+      "baseline": "ea554136008e165b2c807962ddca189edafa9788",
       "packages": [ "neflib" ]
     }
   ],
