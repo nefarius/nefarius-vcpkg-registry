@@ -7,7 +7,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO nefarius/neflib
     REF master
-    SHA512 2e2a551857ef318fbdae668e74bd39ac827a603457c6ec1f87346eae716a683b40e582fcef8a496192ce916432f713efd51867637e6afc81fe306bcfd4b99fff
+    SHA512 bf3a33da83dbf1a40204f8afe1b1afeb4a197fc2350396c46c1f0cc3b4d7cc12e57931b5c2fa599e5c70f72988c8a6d1528fe7699793b60dbad2b63ebc84862a
 )
 
 vcpkg_msbuild_install(
