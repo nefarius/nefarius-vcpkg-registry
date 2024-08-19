@@ -25,7 +25,7 @@ $updatedContent = $fileContent -replace $pattern, "`$1 $customSHA512"
 # Write the updated content back to the file
 Set-Content $cmakeFilePath -Value $updatedContent
 
-git commit -a -m "Updated neflib" 
+git commit -a -m "Updated neflib" *> $null
 $commitSHA1 = $(git rev-parse HEAD:ports/neflib)
 
 # Define the path to the JSON file
