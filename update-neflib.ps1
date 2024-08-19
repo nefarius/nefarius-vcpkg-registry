@@ -1,3 +1,8 @@
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Host "Git is not installed or not available in the system PATH."
+    exit
+}
+
 # Define the URL and the local file path
 $url = "https://github.com/nefarius/neflib/archive/master.tar.gz"
 $localFile = "$env:TEMP\master.tar.gz"
