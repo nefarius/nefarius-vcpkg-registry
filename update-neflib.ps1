@@ -1,11 +1,16 @@
+Param(
+    [Parameter(Mandatory = $true)]
+    [string]$Version
+) #end param
+
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     Write-Host "Git is not installed or not available in the system PATH."
     exit
 }
 
 # Define the URL and the local file path
-$url = "https://github.com/nefarius/neflib/archive/master.tar.gz"
-$localFile = "$env:TEMP\master.tar.gz"
+$url = "https://github.com/nefarius/neflib/archive/refs/tags/v$Version.tar.gz"
+$localFile = "$env:TEMP\v$Version.tar.gz"
 
 # Download the file
 Invoke-WebRequest -Uri $url -OutFile $localFile
@@ -40,10 +45,15 @@ $jsonFilePath = ".\versions\n-\neflib.json"
 $jsonContent = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 
 # Update the git-tree value
-$jsonContent.versions[0].'git-tree' = $commitSHA1
+foreach ($version in $json.versions) {
+    if ($version.version -eq $Version) {
+        $version.'git-tree' = $commitSHA1
+        break
+    }
+}
 
 # Convert the updated object back to JSON format
-$updatedJsonContent = $jsonContent | ConvertTo-Json
+$updatedJsonContent = $jsonContent | ConvertTo-Json -Depth 10
 
 # Write the updated JSON back to the file
 Set-Content -Path $jsonFilePath -Value $updatedJsonContent
