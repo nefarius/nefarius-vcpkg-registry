@@ -46,6 +46,8 @@ $json = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 
 $version = $json.versions | Where-Object { $_.version -eq $Version }
 
+$version
+
 if ($version) {
     # Update the existing version's "git-tree"
     $version.'git-tree' = $commitSHA1
