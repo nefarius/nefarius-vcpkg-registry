@@ -1,6 +1,6 @@
 Param(
     [Parameter(Mandatory = $true)]
-    [string]$Version
+    [string]$RefVersion
 ) #end param
 
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
@@ -9,8 +9,8 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 }
 
 # Define the URL and the local file path
-$url = "https://github.com/nefarius/neflib/archive/refs/tags/v$Version.tar.gz"
-$localFile = "$env:TEMP\v$Version.tar.gz"
+$url = "https://github.com/nefarius/neflib/archive/refs/tags/v$RefVersion.tar.gz"
+$localFile = "$env:TEMP\v$RefVersion.tar.gz"
 
 # Download the file
 Invoke-WebRequest -Uri $url -OutFile $localFile
@@ -44,9 +44,7 @@ $jsonFilePath = ".\versions\n-\neflib.json"
 # Read the JSON file content
 $json = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 
-$version = $json.versions | Where-Object { $_.version -eq $Version }
-
-$version
+$version = $json.versions | Where-Object { $_.version -eq $RefVersion }
 
 if ($version) {
     # Update the existing version's "git-tree"
@@ -54,11 +52,11 @@ if ($version) {
 }
 else {
     # Add a new version with the specified "git-tree"
-    $newVersion = [PSCustomObject]@{
-        version    = $Version
+    $newRefVersion = [PSCustomObject]@{
+        version    = $RefVersion
         'git-tree' = $commitSHA1
     }
-    $json.versions += $newVersion
+    $json.versions += $newRefVersion
 }
 
 # Convert the updated object back to JSON format
