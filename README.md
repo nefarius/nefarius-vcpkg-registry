@@ -8,7 +8,7 @@ My vcpkg packages registry.
 
 ## How to update
 
-Run the `.\update-neflib.ps1` PowerShell helper script and push.
+Run the `.\update-neflib.ps1 -RefVersion X.X.X` PowerShell helper script and push.
 
 ## Test it locally
 
