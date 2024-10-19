@@ -42,18 +42,25 @@ $commitSHA1 = $(git rev-parse HEAD:ports/neflib)
 $jsonFilePath = ".\versions\n-\neflib.json"
 
 # Read the JSON file content
-$jsonContent = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
+$json = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
 
-# Update the git-tree value
-foreach ($version in $json.versions) {
-    if ($version.version -eq $Version) {
-        $version.'git-tree' = $commitSHA1
-        break
+$version = $json.versions | Where-Object { $_.version -eq $Version }
+
+if ($version) {
+    # Update the existing version's "git-tree"
+    $version.'git-tree' = $commitSHA1
+}
+else {
+    # Add a new version with the specified "git-tree"
+    $newVersion = [PSCustomObject]@{
+        version    = $Version
+        'git-tree' = $commitSHA1
     }
+    $json.versions += $newVersion
 }
 
 # Convert the updated object back to JSON format
-$updatedJsonContent = $jsonContent | ConvertTo-Json -Depth 10
+$updatedJsonContent = $json | ConvertTo-Json -Depth 10
 
 # Write the updated JSON back to the file
 Set-Content -Path $jsonFilePath -Value $updatedJsonContent
