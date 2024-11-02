@@ -38,6 +38,14 @@ Set-Content $cmakeFilePath -Value $updatedContent
 git commit -a -m "Updated neflib" *> $null
 $commitSHA1 = $(git rev-parse HEAD:ports/neflib)
 
+$manifestPath = ".\ports\neflib\vcpkg.json"
+
+$manifest = Get-Content -Raw -Path $manifestPath | ConvertFrom-Json
+
+$manifest.version = "$RefVersion";
+
+Set-Content -Path $manifestPath -Value $($manifest | ConvertTo-Json -Depth 10)
+
 # Define the path to the JSON file
 $jsonFilePath = ".\versions\n-\neflib.json"
 
