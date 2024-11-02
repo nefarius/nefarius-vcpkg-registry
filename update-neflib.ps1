@@ -46,6 +46,14 @@ $manifest.version = "$RefVersion";
 
 Set-Content -Path $manifestPath -Value $($manifest | ConvertTo-Json -Depth 10)
 
+$baselinePath = ".\versions\baseline.json"
+
+$baseline = Get-Content -Raw -Path $baselinePath | ConvertFrom-Json
+
+$manifest.default.neflib.baseline = "$RefVersion";
+
+Set-Content -Path $baselinePath -Value $($baseline | ConvertTo-Json -Depth 10)
+
 # Define the path to the JSON file
 $jsonFilePath = ".\versions\n-\neflib.json"
 

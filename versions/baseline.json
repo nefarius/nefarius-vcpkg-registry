@@ -1,8 +1,8 @@
 {
-    "default": {
-        "neflib": {
-            "baseline": "1.0.0",
-            "port-version": 0
-        }
+  "default": {
+    "neflib": {
+      "baseline": "1.0.0",
+      "port-version": 0
     }
+  }
 }
