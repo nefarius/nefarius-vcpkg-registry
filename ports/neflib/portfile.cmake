@@ -16,7 +16,7 @@ vcpkg_msbuild_install(
     PROJECT_SUBPATH src/neflib.vcxproj
     RELEASE_CONFIGURATION "Release"
     DEBUG_CONFIGURATION "Debug"
-    PLATFORM ${PLATFORM}
+    PLATFORM ${VCPKG_TARGET_ARCHITECTURE}
 )
 
 vcpkg_fixup_pkgconfig()
