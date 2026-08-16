@@ -44,9 +44,9 @@
                          "version":  "1.3.2",
                          "git-tree":  "243b750e5f4ea413942f4515de96e6ffd3230d1d"
                      },
-                     {
-                         "version":  "1.6.0",
-                         "git-tree":  "2c0a86036d530006b8bd7d3b1de1fcb720923ee2"
-                     }
+                    {
+                        "version":  "1.6.0",
+                        "git-tree":  "9266d659208cc440ef7e93894482be3443ed0334"
+                    }
                  ]
 }
