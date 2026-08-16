@@ -17,74 +17,54 @@ Invoke-WebRequest -Uri $url -OutFile $localFile
 
 # Compute the SHA512 hash
 $sha512 = Get-FileHash -Algorithm SHA512 -Path $localFile
-
 $customSHA512 = $sha512.Hash
 
-# Define the path to the .cmake file
+# --- Update ports/neflib/portfile.cmake (SHA512) and ports/neflib/vcpkg.json (version) ---
+# Both files are edited via targeted regex replacement (not ConvertTo-Json round-trips) so
+# formatting stays stable and both changes land in the *same* commit before we snapshot the
+# "git-tree" below. Previously the version bump happened after this snapshot was taken and was
+# never staged for the amend, so published versions could end up with a stale manifest version.
+
 $cmakeFilePath = ".\ports\neflib\portfile.cmake"
-
-# Read the content of the .cmake file
-$fileContent = Get-Content $cmakeFilePath
-
-# Define a regex pattern to match the existing SHA512 line
-$pattern = "(SHA512)\s+[0-9a-fA-F]{128}"
-
-# Replace the old SHA512 value with your custom one
-$updatedContent = $fileContent -replace $pattern, "`$1 $customSHA512"
-
-# Write the updated content back to the file
-Set-Content $cmakeFilePath -Value $updatedContent
-
-git commit -a -m "Updated neflib" *> $null
-$commitSHA1 = $(git rev-parse HEAD:ports/neflib)
+$cmakeContent = Get-Content -Raw -Path $cmakeFilePath
+$cmakeContent = $cmakeContent -replace "(SHA512)\s+[0-9a-fA-F]{128}", "`$1 $customSHA512"
+Set-Content -NoNewline -Path $cmakeFilePath -Value $cmakeContent
 
 $manifestPath = ".\ports\neflib\vcpkg.json"
+$manifestContent = Get-Content -Raw -Path $manifestPath
+$manifestContent = $manifestContent -replace '("version":\s*)"[^"]+"', "`$1""$RefVersion"""
+Set-Content -NoNewline -Path $manifestPath -Value $manifestContent
 
-$manifest = Get-Content -Raw -Path $manifestPath | ConvertFrom-Json
+git add ports/neflib/portfile.cmake ports/neflib/vcpkg.json
+git commit -m "Updated neflib" *> $null
+$commitSHA1 = $(git rev-parse HEAD:ports/neflib)
 
-$manifest.version = "$RefVersion";
-
-Set-Content -Path $manifestPath -Value $($manifest | ConvertTo-Json -Depth 10)
-
+# --- Update versions/baseline.json (scoped to the neflib block, preserves formatting) ---
 $baselinePath = ".\versions\baseline.json"
+$baselineContent = Get-Content -Raw -Path $baselinePath
+$baselineContent = $baselineContent -replace '("neflib":\s*\{\s*"baseline":\s*)"[^"]+"', "`$1""$RefVersion"""
+Set-Content -NoNewline -Path $baselinePath -Value $baselineContent
 
-$baselineJson = Get-Content -Raw -Path $baselinePath | ConvertFrom-Json
-
-$baselineJson.default.neflib.baseline = "$RefVersion";
-
-Set-Content -Path $baselinePath -Value $($baselineJson | ConvertTo-Json -Depth 10)
-
-# Define the path to the JSON file
+# --- Update versions/n-/neflib.json (insert new entry or refresh git-tree of an existing one) ---
 $jsonFilePath = ".\versions\n-\neflib.json"
+$jsonContent = Get-Content -Raw -Path $jsonFilePath
 
-# Read the JSON file content
-$json = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-
-$version = $json.versions | Where-Object { $_.version -eq $RefVersion }
-
-if ($version) {
-    # Update the existing version's "git-tree"
-    $version.'git-tree' = $commitSHA1
+if ($jsonContent -match "`"version`":\s*`"$([regex]::Escape($RefVersion))`"") {
+    # Version already registered (re-run for the same tag): just refresh its git-tree.
+    $jsonContent = $jsonContent -replace "(`"version`":\s*`"$([regex]::Escape($RefVersion))`",\s*\r?\n\s*`"git-tree`":\s*)`"[^`"]+`"", "`$1`"$commitSHA1`""
 }
 else {
-    # Add a new version with the specified "git-tree"
-    $newRefVersion = [PSCustomObject]@{
-        version    = $RefVersion
-        'git-tree' = $commitSHA1
-    }
-    $json.versions += $newRefVersion
+    # New version: prepend an entry right after the opening "versions": [ bracket.
+    $newEntry = "    {`r`n      `"version`": `"$RefVersion`",`r`n      `"git-tree`": `"$commitSHA1`"`r`n    },`r`n"
+    $jsonContent = $jsonContent -replace '("versions":\s*\[\r?\n)', "`$1$newEntry"
 }
 
-# Convert the updated object back to JSON format
-$updatedJsonContent = $json | ConvertTo-Json -Depth 10
-
-# Write the updated JSON back to the file
-Set-Content -Path $jsonFilePath -Value $updatedJsonContent
+Set-Content -NoNewline -Path $jsonFilePath -Value $jsonContent
 
 # Delete the temporary file
 Remove-Item -Path $localFile -Force
 
-git add versions *> $null
+git add versions
 git commit --amend --no-edit *> $null
 git push *> $null
 $baseline = $(git rev-parse HEAD)
